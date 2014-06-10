@@ -149,13 +149,20 @@ module Nlpir
 
   #--函数
 
+
+  require 'pp'
   def NLPIR_Init(sInitDirPath=nil , encoding=UTF8_CODE)
     sInitDirPath += "/Data/"
+    pp sInitDirPath
     if File.exist?(sInitDirPath)==false
+      pp "nema foldera, kopiram data"
       FileUtils.mkdir(sInitDirPath)
       filemother = File.expand_path("../Data/", __FILE__)
+      pp filemother
+      pp sInitDirPath
       FileUtils.copy_entry filemother,sInitDirPath
     end
+    pp "AAAAA"
     @charset = 'gbk' if encoding == GBK_CODE
     @charset = 'utf-8' if encoding == UTF8_CODE
     @charset = 'big5' if  encoding == BIG5_CODE
