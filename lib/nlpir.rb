@@ -3,11 +3,11 @@ require File.expand_path("../nlpir/version", __FILE__)
 require 'fiddle'
 require 'fiddle/struct'
 require 'fiddle/import'
-require 'fileutils'   
+require 'fileutils'
 include Fiddle::CParser
-include Fiddle::Importer
 
 module Nlpir
+  extend Fiddle::Importer
   NLPIR_FALSE = 0
   NLPIR_TRUE = 1
   POS_MAP_NUMBER = 4
@@ -19,7 +19,7 @@ module Nlpir
 
   Result_t = struct ['int start','int length',"char  sPOS[#{POS_SIZE}]",'int iPOS',
   		          'int word_ID','int word_type','int weight']
-  
+
   GBK_CODE = 0                                                    #默认支持GBK编码
   UTF8_CODE = GBK_CODE + 1                          #UTF8编码
   BIG5_CODE = GBK_CODE + 2                          #BIG5编码
@@ -29,7 +29,7 @@ module Nlpir
 
   #提取链接库接口
   libm = Fiddle.dlopen(File.expand_path("../../bin/libNLPIR.so", __FILE__))
- 
+
  NLPIR_Init_rb = Fiddle::Function.new(
     libm['NLPIR_Init'],
     [Fiddle::TYPE_VOIDP,Fiddle::TYPE_INT],
@@ -155,7 +155,7 @@ module Nlpir
       FileUtils.mkdir(sInitDirPath)
       filemother = File.expand_path("../Data/", __FILE__)
       FileUtils.copy_entry filemother,sInitDirPath
-    end          
+    end
     @charset = 'gbk' if encoding == GBK_CODE
     @charset = 'utf-8' if encoding == UTF8_CODE
     @charset = 'big5' if  encoding == BIG5_CODE
@@ -203,7 +203,7 @@ module Nlpir
   end
   alias :file_proc :NLPIR_FileProcess
 
-  
+
   def NLPIR_ParagraphProcessAW(sParagraph)
     free = Fiddle::Function.new(Fiddle::RUBY_FREE, [TYPE_VOIDP], TYPE_VOID)
     resultCount = NLPIR_GetParagraphProcessAWordCount(sParagraph)
